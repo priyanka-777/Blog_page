@@ -3,9 +3,12 @@ mongo
 admin   0.000GB
 config  0.000GB
 local   0.000GB
+//switching to appdb
 > use appdb
 switched to db appdb
 > show collections;
+//nothing at first
+//deleting database
 > db.dropDatabase()
 { "ok" : 1 }
 > show dbs;
@@ -14,13 +17,19 @@ config  0.000GB
 local   0.000GB
 > db
 appdb
+
+//inserting element
+
 > db.users.insertOne({name:"john"})
 {
 	"acknowledged" : true,
 	"insertedId" : ObjectId("62a8279b2dc2fa34e1927ae7")
 }
+
+//finding an element
 > db.users.find()
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
+
 > show dbs;
 admin   0.000GB
 appdb   0.000GB
@@ -34,6 +43,8 @@ local   0.000GB
 > db.users.find()
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
+
+//inserting many elements at a time
 > db.users.insertMany([{name:"dev"},{name:"priya"}])
 {
 	"acknowledged" : true,
@@ -63,21 +74,33 @@ local   0.000GB
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+
+//finding elements with limit(size)
 > db.users.find().limit(2)
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
+
+//finding 2 elements based on sorting
 > db.users.find().sort({name:1}).limit(2)
 { "_id" : ObjectId("62a828d32dc2fa34e1927ae9"), "name" : "dev" }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
+
+//sorting in reverse order
 > db.users.find().sort({name:-1}).limit(2)
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
+
+//getting names who dont have age(least age)
 > db.users.find().sort({age:1, name:-1}).limit(2)
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
+
+//getting names with high age
 > db.users.find().sort({age:-1, name:-1}).limit(2)
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
+
+getting element based on our requirement
 > db.users.find({name:"priya"})
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
 > db.users.find({age:18})
@@ -88,53 +111,76 @@ local   0.000GB
 { "name" : "divya", "age" : 18 }
 > db.users.find({name:"divya"},{age:0})
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
+
+//finding eqaul to sallay
 > db.users.find({ name : {$eq:"sallay"}})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
+
+//finding all which doesnt contain sallay
 > db.users.find({ name : {$ne:"sallay"}})
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828d32dc2fa34e1927ae9"), "name" : "dev" }
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+
+//gt-greater than
 > db.users.find({age:{$gt:13}})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+
+//gte-greater than or eqaul to
 > db.users.find({age:{$gte:19}})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+use lte-less than or equal to
 > db.users.find({age:{$lte:19}})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
+
+//in-if present in names
 > db.users.find({name:{$in:["sally","priya"]}})
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
 > db.users.find({name:{$in:["sallay","priya"]}})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
+
+//nin-not in names
 > db.users.find({name:{$nin:["sallay","priya"]}})
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828d32dc2fa34e1927ae9"), "name" : "dev" }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+//getting names which have age
 > db.users.find({age:{$exists:true}})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+
+//which dont have age
 > db.users.find({age:{$exists:false}})
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828d32dc2fa34e1927ae9"), "name" : "dev" }
 { "_id" : ObjectId("62a828d32dc2fa34e1927aea"), "name" : "priya" }
+
+//finding elements greater than or equal to or less than or equal to
 > db.users.find({age:{$gte:20,$lte:40}})
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
 > db.users.find({age:{$gte:20,$lte:40},name:"divya"})
 > db.users.find({age:{$gte:20,$lte:40},name:"navya"})
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+//using keyword and
 > db.users.find({$and:[{age:28},{name:"navya"}]})
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+
+//using or keyword
 >db.users.find({$or:[{age:{$lte:20}},{name:"navya"}]})
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aeb"), "name" : "divya", "age" : 18, "adress" : { "street" : "78 ramalayam st" }, "hobbies" : [ "singing" ] }
 { "_id" : ObjectId("62a8299d2dc2fa34e1927aec"), "name" : "navya", "age" : 28, "adress" : { "street" : "devi chowk" }, "hobbies" : [ "dancing" ] }
+
+//using not keyword
 > db.users.find({age:{$not:{$lte:20}}})
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828d32dc2fa34e1927ae9"), "name" : "dev" }
@@ -153,6 +199,8 @@ local   0.000GB
 		ObjectId("62a86f8ed34a794917dcb3dc")
 	]
 }
+
+//using expr-expression keyword
 > db.users.find({$expr:{$gt:["debt","balance"]}})
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
 { "_id" : ObjectId("62a828392dc2fa34e1927ae8"), "name" : "sallay", "age" : 19, "adress" : { "street" : "98 north st" }, "hobbies" : [ "running" ] }
@@ -180,6 +228,8 @@ null
 		"running"
 	]
 }
+
+//updating old value
 > db.users.updateOne({age:28},{$set:{age:27}})
 { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
 > db.users.findOne({age:27})
@@ -194,6 +244,8 @@ null
 		"dancing"
 	]
 }
+
+//finding based on id
 > db.users.updateOne({_id: ObjectId("62a8299d2dc2fa34e1927aec")},{$set:{name:"new name"}})
 { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
 > db.users.findOne({_id: ObjectId("62a8299d2dc2fa34e1927aec")})
@@ -208,6 +260,8 @@ null
 		"dancing"
 	]
 }
+
+//increasing age using inc
 > db.users.updateOne({_id: ObjectId("62a8299d2dc2fa34e1927aec")},{$inc:{age:3}})
 { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
 > db.users.findOne({_id: ObjectId("62a8299d2dc2fa34e1927aec")})
@@ -222,6 +276,8 @@ null
 		"dancing"
 	]
 }
+
+//using keyword rename 
 > db.users.updateOne({_id: ObjectId("62a8299d2dc2fa34e1927aec")},{$rename:{name:"first name"}})
 { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
 > db.users.findOne({_id: ObjectId("62a8299d2dc2fa34e1927aec")})
@@ -249,13 +305,18 @@ null
 	],
 	"first name" : "new name"
 }
+
+//replacing items from existing ones
 > db.users.replaceOne({age:30},{name:"john"})
 { "acknowledged" : true, "matchedCount" : 0, "modifiedCount" : 0 }
 > db.users.find({name:"john"})
 { "_id" : ObjectId("62a8279b2dc2fa34e1927ae7"), "name" : "john" }
+//deleting items using deleteone
 > db.users.deleteOne({name:"john"})
 { "acknowledged" : true, "deletedCount" : 1 }
 > db.users.find({name:"john"})
+
+//deleting many itemas at a time
 > db.users.deleteMany({age:{$exists:false}})
 { "acknowledged" : true, "deletedCount" : 5 }
 > db.users.find()
