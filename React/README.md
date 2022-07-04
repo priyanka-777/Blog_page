@@ -1,9 +1,9 @@
 # Getting Started with Create React App
 # To run the above code run the below commands
 
-nvm use 14.18.3
-npm install
-npm run start
+nvm use 14.18.3 \
+npm install \
+npm run start \
 
 # open another new terminal and run
 
