@@ -1,11 +1,12 @@
 # Getting Started with Create React App
-#To run the above code run the below commands
+# To run the above code run the below commands
 
 nvm use 14.18.3
 npm install
 npm run start
 
-#open another new terminal and run
+# open another new terminal and run
+
 npx json-server --watch data/db.json --port 8000
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
