@@ -3,7 +3,7 @@
 
 nvm use 14.18.3 \
 npm install \
-npm run start \
+npm run start 
 
 # open another new terminal and run
 
